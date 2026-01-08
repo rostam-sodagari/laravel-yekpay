@@ -111,7 +111,7 @@ This package mirrors that flow explicitly.
         ));
     
     if (! $result->ok() || ! $result->authority) {
-        abort(400, $result->message());
+        abort(400, $result->getDescription());
     }
 
 ---
