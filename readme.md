@@ -153,7 +153,20 @@ This package mirrors that flow explicitly.
     }
 
 ---
+## Test Cards (Sandbox Mode)
 
+The following card details are **sandbox-only test cards** provided for integration testing with the [Yekpay](https://yekpay.com) payment gateway.
+
+⚠️ **Important**
+- These cards work **only in sandbox mode**
+- They are **not real cards**
+- Do **not** use them in production
+
+| Card Name | Card Number | Expiration Date | CVC | Expected Result |
+|----------|-------------|-----------------|-----|-----------------|
+| John Doe | 5269 5522 3333 4445 | 2028/12 | 000 | Unsuccessful transaction |
+| David Doe | 4022 7711 2222 3334 | 2028/12 | 000 | Successful transaction |
+---
 ## Currency Enum
 
 All supported currencies are defined as a PHP enum:
