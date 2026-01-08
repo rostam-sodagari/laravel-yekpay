@@ -10,14 +10,23 @@ use RostamSodagari\YekPay\Exceptions\YekPayException;
 
 final class YekPay
 {
+    /**
+     * @param \GuzzleHttp\ClientInterface $http
+     * @param string                      $merchantId
+     * @param array                       $endpoints
+     */
     public function __construct(
         private readonly ClientInterface $http,
-        private readonly string          $merchantId,
-        private readonly array           $endpoints,
-    )
-    {
-    }
+        private readonly string $merchantId,
+        private readonly array $endpoints,
+    ) {}
 
+    /**
+     * @param \RostamSodagari\YekPay\DTO\RequestPaymentData $data
+     *
+     * @return \RostamSodagari\YekPay\DTO\RequestPaymentResult
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function request(RequestPaymentData $data): RequestPaymentResult
     {
         $res = $this->http->request('POST', $this->endpoints['request'], [
@@ -25,52 +34,64 @@ final class YekPay
             'headers' => ['Accept' => 'application/json'],
         ]);
 
-        $body = (string)$res->getBody();
+        $body = (string) $res->getBody();
         $json = json_decode($body, true);
 
-        if ( !is_array($json) ) {
+        if (!is_array($json)) {
             throw new YekPayException('Invalid JSON response from YekPay request endpoint.');
         }
+        $rawDescription = $json['Description'] ?? 'Unknown';
+
         $description = match (true) {
             is_string($rawDescription) => $rawDescription,
-            is_array($rawDescription) => implode(' ', array_map('strval', $rawDescription)),
-            $rawDescription === null => 'Unknown',
-            default => (string)$rawDescription,
+            is_array($rawDescription)  => implode(' ', array_map('strval', $rawDescription)),
+            $rawDescription === null   => 'Unknown',
+            default                    => (string) $rawDescription,
         };
 
         return new RequestPaymentResult(
-            code: (int)($json['Code'] ?? 0),
+            code: (int) ($json['Code'] ?? 0),
             description: $description,
-            authority: isset($json['Authority']) ? (string)$json['Authority'] : null,
+            authority: isset($json['Authority']) ? (string) $json['Authority'] : null,
         );
-
     }
 
+    /**
+     * @param string $authority
+     *
+     * @return string
+     */
     public function startUrl(string $authority): string
     {
         return str_replace('{AUTHORITY}', $authority, $this->endpoints['start']);
     }
 
+    /**
+     * @param string $authority
+     *
+     * @return \RostamSodagari\YekPay\DTO\VerifyPaymentResult
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     public function verify(string $authority): VerifyPaymentResult
     {
         $res = $this->http->request('POST', $this->endpoints['verify'], [
             'form_params' => [
                 'merchantId' => $this->merchantId,
-                'authority' => $authority,
+                'authority'  => $authority,
             ],
             'headers' => ['Accept' => 'application/json'],
         ]);
 
-        $body = (string)$res->getBody();
+        $body = (string) $res->getBody();
         $json = json_decode($body, true);
 
-        if ( !is_array($json) ) {
+        if (!is_array($json)) {
             throw new YekPayException('Invalid JSON response from YekPay verify endpoint.');
         }
 
         return new VerifyPaymentResult(
-            code: (int)($json['Code'] ?? 0),
-            description: (string)($json['Description'] ?? 'Unknown'),
+            code: (int) ($json['Code'] ?? 0),
+            description: (string) ($json['Description'] ?? 'Unknown'),
             reference: $json['Reference'] ?? null,
             gateway: $json['Gateway'] ?? null,
             orderNo: $json['OrderNo'] ?? null,

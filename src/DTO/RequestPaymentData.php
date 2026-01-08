@@ -22,6 +22,11 @@ final class RequestPaymentData
         public readonly ?string $description = null,
     ) {}
 
+    /**
+     * @param string $merchantId
+     *
+     * @return array
+     */
     public function toFormParams(string $merchantId): array
     {
         // Docs say all required except description. :contentReference[oaicite:8]{index=8}

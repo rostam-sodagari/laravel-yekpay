@@ -20,7 +20,7 @@ final class YekPayServiceProvider extends ServiceProvider
             ]);
         });
 
-        $this->app->singleton(YekPay::class, function ($app) {
+        $this->app->singleton('YekPay', function ($app) {
             $cfg = config('yekpay');
 
             $mode = !empty($cfg['sandbox']) ? 'sandbox' : 'production';
@@ -40,10 +40,5 @@ final class YekPayServiceProvider extends ServiceProvider
             __DIR__.'/../config/yekpay.php' => config_path('yekpay.php'),
         ], 'yekpay-config');
 
-        $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'yekpay');
-
-        $this->publishes([
-            __DIR__.'/../resources/lang' => lang_path('vendor/yekpay'),
-        ], 'yekpay-lang');
     }
 }

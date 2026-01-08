@@ -10,8 +10,8 @@ use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use RostamSodagari\YekPay\DTO\RequestPaymentData;
 use RostamSodagari\YekPay\Enums\Currency;
-use RostamSodagari\YekPay\YekPay;
 use RostamSodagari\YekPay\Tests\TestCase;
+use RostamSodagari\YekPay\YekPay;
 
 final class YekPayClientTest extends TestCase
 {
