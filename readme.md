@@ -30,7 +30,7 @@ It wraps the full **request → redirect → verify** payment lifecycle using **
 
 Install via Composer:
 
-    composer require rostamsodagari/laravel-yekpay
+    composer require rostam-sodagari/laravel-yekpay
 
 Publish the configuration file:
 
